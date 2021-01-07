@@ -1,5 +1,6 @@
 package com.shine.herostory;
 
+import com.shine.herostory.handler.CmdHandlerFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -20,6 +21,9 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 public class ServerMain {
 
     public static void main(String[] args) {
+
+        CmdHandlerFactory.init();
+        GameMsgRecognizer.init();
         /**
          * 接收连接
          */
@@ -39,6 +43,8 @@ public class ServerMain {
                             new HttpServerCodec(),//Http服务解编码器
                             new HttpObjectAggregator(65535),//内容长度限制
                             new WebSocketServerProtocolHandler("/websocket"),
+                            new GameMsgDecoder(),
+                            new GameMsgEncoder(),
                             new GameMsgHandler()
                     );
             }

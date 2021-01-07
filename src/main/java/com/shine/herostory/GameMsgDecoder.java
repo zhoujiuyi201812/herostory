@@ -1,12 +1,15 @@
 package com.shine.herostory;
 
 import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.Message;
 import com.shine.herostory.msg.GameMsgProtocol;
 import com.shine.herostory.msg.GameMsgProtocol.MsgCode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @program: herostory
@@ -16,30 +19,29 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
  **/
 public class GameMsgDecoder extends ChannelInboundHandlerAdapter {
 
+    static private final Logger LOGGER=LoggerFactory.getLogger(GameMsgDecoder.class);
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("进入解码器");
         if (null == msg || !(msg instanceof BinaryWebSocketFrame)) {
             return;
         }
         //WebSocket  二进制消息会被HttpServerCodec解码成BinaryWebSocketFrame
         BinaryWebSocketFrame frame = (BinaryWebSocketFrame) msg;
         ByteBuf buf = frame.content();
-        byte[] msgBody = new byte[buf.readableBytes()];
-        buf.readBytes(msgBody);
         buf.readShort();
         int msgCode = buf.readShort();
-        GeneratedMessageV3 cmd=null;
-        switch (msgCode) {
-            case MsgCode.USER_ENTRY_CMD_VALUE:
-                cmd = GameMsgProtocol.UserEntryCmd.parseFrom(msgBody);
-                break;
-            default:
-                throw new IllegalArgumentException("消息编码错误");
-
+        byte[] msgBody = new byte[buf.readableBytes()];
+        buf.readBytes(msgBody);
+        Message.Builder builder = GameMsgRecognizer.getMsgByCode(msgCode);
+        if(null==builder){
+            LOGGER.error("无法识别的消息:{}"+msgCode);
         }
-        if(null!=cmd){
-            ctx.fireChannelRead(cmd);
+        builder.clear();
+        builder.mergeFrom(msgBody);
+        Message message = builder.build();
+        if (null != message) {
+            ctx.fireChannelRead(message);
         }
 
     }
