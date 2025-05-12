@@ -1,0 +1,55 @@
+方案三
+import java.util.Scanner;
+
+public class Main {
+
+    private static int longestCommonPrefix(String s1, String s2) {
+        int length = 0;
+        int n = Math.min(s1.length(), s2.length());
+        for (int i = 0; i < n; i++) {
+            if (Character.toLowerCase(s1.charAt(i)) == Character.toLowerCase(s2.charAt(i))) {
+                length++;
+            } else {
+                break;
+            }
+        }
+        return length;
+    }
+
+    private static int minRotationsToMaxCommonPrefix(String first, String second) {
+        int n = first.length();
+        int maxPrefix = 0;
+        int minRotation = -1;
+
+        // Try all right rotations
+        for (int r = 0; r < n; r++) {
+            String rotated = second.substring(n - r) + second.substring(0, n - r);
+            int common = longestCommonPrefix(first, rotated);
+            if (common > maxPrefix) {
+                maxPrefix = common;
+                minRotation = r;
+            }
+        }
+
+        // Try all left rotations
+        for (int l = 1; l < n; l++) {
+            String rotated = second.substring(l) + second.substring(0, l);
+            int common = longestCommonPrefix(first, rotated);
+            if (common > maxPrefix) {
+                maxPrefix = common;
+                minRotation = l;
+            }
+        }
+
+        return maxPrefix > 0 ? minRotation : -1;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String firstString = sc.nextLine().trim();
+        String secondString = sc.nextLine().trim();
+
+        int result = minRotationsToMaxCommonPrefix(firstString, secondString);
+        System.out.println(result);
+    }
+}
