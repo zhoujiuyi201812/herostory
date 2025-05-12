@@ -1,0 +1,69 @@
+import java.util.HashSet;
+import java.util.Scanner;
+
+public class Main {
+    public static long[] solve(long x1, long x2, long vf, long n) {
+        // Step 1: Compute father's positions (moving right)
+        HashSet<Long> fatherPositions = new HashSet<>();
+        for (long i = 0; i <= n; i++) {
+            long pos = x1 + i * vf; // Move right: X1 + i * Vf
+            fatherPositions.add(pos);
+        }
+
+        // Step 2: Try V2 values from highest to lowest to prefer higher V2
+        long maxF = 0;
+        long bestV2 = 1;
+        for (long v2 = 10000; v2 >= 1; v2--) { // 1 <= V2 <= 10^4, descending for highest V2
+            // Check if first step X2 + V2 is in father's positions
+            long firstStep = x2 + v2;
+            if (!fatherPositions.contains(firstStep)) {
+                continue; // Skip if first step condition isn't met
+            }
+
+            // Compute Martin's positions
+            HashSet<Long> martinPositions = new HashSet<>();
+            long j = 0;
+            long maxFatherPos = x1 + n * vf; // Farthest father position
+            while (true) {
+                long pos = x2 + j * v2;
+                if (pos > maxFatherPos) { // Stop when Martin exceeds father's farthest position
+                    break;
+                }
+                martinPositions.add(pos);
+                j++;
+            }
+
+            // Compute common footsteps
+            HashSet<Long> common = new HashSet<>(fatherPositions);
+            common.retainAll(martinPositions); // Intersection
+            long f = common.size();
+
+            // Update maxF and bestV2 (prefer higher V2 due to descending loop)
+            if (f >= maxF) {
+                maxF = f;
+                bestV2 = v2;
+            }
+        }
+
+        return new long[]{maxF, bestV2};
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        // Read input
+        long x1 = sc.nextLong();
+        long x2 = sc.nextLong();
+        long vf = sc.nextLong();
+        long n = sc.nextLong();
+
+        // Solve and get result
+        long[] result = solve(x1, x2, vf, n);
+        long f = result[0];
+        long v2 = result[1];
+
+        // Print output
+        System.out.println(f + " " + v2);
+
+        sc.close();
+    }
+}
