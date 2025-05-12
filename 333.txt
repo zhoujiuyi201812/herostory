@@ -1,0 +1,2 @@
+Constraints
+1≤X, ≤ 10F
