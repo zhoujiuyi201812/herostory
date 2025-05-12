@@ -1,0 +1,58 @@
+import java.util.HashSet;
+import java.util.Scanner;
+
+public class Main {
+    public static long[] solve(long x1, long x2, long vf, long n) {
+        // Step 1: Compute father's positions
+        HashSet<Long> fatherPositions = new HashSet<>();
+        for (long i = 0; i <= n; i++) {
+            long pos = x1 - i * vf;
+            fatherPositions.add(pos);
+        }
+
+        // Step 2: Try different V2 values to maximize common footsteps
+        long maxF = 0;
+        long bestV2 = 1;
+        for (long v2 = 1; v2 <= 10000; v2++) { // Constraints: 1 <= V2 <= 10^4
+            HashSet<Long> martinPositions = new HashSet<>();
+            long j = 0;
+            while (true) {
+                long pos = x2 + j * v2;
+                if (pos > x1) { // Stop when Martin exceeds father's starting position
+                    break;
+                }
+                martinPositions.add(pos);
+                j++;
+            }
+            // Compute common footsteps
+            HashSet<Long> common = new HashSet<>(fatherPositions);
+            common.retainAll(martinPositions); // Intersection
+            long f = common.size();
+            if (f > maxF) {
+                maxF = f;
+                bestV2 = v2;
+            }
+        }
+
+        return new long[]{maxF, bestV2};
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        // Read input
+        long x1 = sc.nextLong();
+        long x2 = sc.nextLong();
+        long vf = sc.nextLong();
+        long n = sc.nextLong();
+        
+        // Solve and get result
+        long[] result = solve(x1, x2, vf, n);
+        long f = result[0];
+        long v2 = result[1];
+        
+        // Print output
+        System.out.println(f + " " + v2);
+        
+        sc.close();
+    }
+}
