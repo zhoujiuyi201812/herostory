@@ -1,0 +1,47 @@
+-------------------- 方案二----------------------
+
+public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // 读取输入
+        String firstString = scanner.nextLine();
+        String secondString = scanner.nextLine();
+        
+        int len = firstString.length();
+        int minRotations = -1;
+        
+        // 检查两个字符串长度是否相同
+        if (firstString.length() != secondString.length()) {
+            System.out.println(-1);
+            return;
+        }
+        
+        // 生成所有右旋转的字符串并检查最长公共前缀
+        for (int rotation = 0; rotation < len; rotation++) {
+            String rotatedString = secondString.substring(len - rotation) + secondString.substring(0, len - rotation);
+            String commonPrefix = getCommonPrefix(firstString, rotatedString);
+            
+            if (commonPrefix.length() > (minRotations >= 0 ? getCommonPrefix(firstString, secondString).length() : 0)) {
+                if (minRotations == -1 || commonPrefix.length() > getCommonPrefix(firstString, secondString).length()) {
+                    minRotations = rotation;
+                }
+            }
+        }
+        
+        // 输出结果
+        System.out.println(minRotations);
+    }
+    
+    // 获取两个字符串的公共前缀
+    private static String getCommonPrefix(String str1, String str2) {
+        StringBuilder commonPrefix = new StringBuilder();
+        int len = Math.min(str1.length(), str2.length());
+        for (int i = 0; i < len; i++) {
+            if (str1.charAt(i) == str2.charAt(i)) {
+                commonPrefix.append(str1.charAt(i));
+            } else {
+                break;
+            }
+        }
+        return commonPrefix.toString();
+    }
