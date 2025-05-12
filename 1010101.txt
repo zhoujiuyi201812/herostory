@@ -1,0 +1,74 @@
+import java.util.Scanner;
+
+public class Main {
+    // Function to compute the length of the longest common prefix of two strings
+    public static int longestCommonPrefixLength(String s1, String s2) {
+        int len = Math.min(s1.length(), s2.length());
+        int lcpLen = 0;
+        for (int i = 0; i < len; i++) {
+            if (s1.charAt(i) != s2.charAt(i)) {
+                break;
+            }
+            lcpLen++;
+        }
+        return lcpLen;
+    }
+
+    // Function to perform one right rotation on a string
+    public static String rightRotate(String s) {
+        if (s.length() <= 1) return s;
+        return s.charAt(s.length() - 1) + s.substring(0, s.length() - 1);
+    }
+
+    // Function to solve the problem
+    public static int solve(String firstString, String secondString) {
+        int n = firstString.length();
+        if (n != secondString.length() || n == 0) return -1;
+
+        String current = secondString;
+        int maxLcpLen = 0;
+        int minRotations = 0;
+
+        // Try all possible rotations (0 to n-1 right rotations)
+        for (int rotations = 0; rotations < n; rotations++) {
+            // Compute LCP for the current rotation
+            int lcpLen = longestCommonPrefixLength(firstString, current);
+            
+            // Update max LCP and corresponding minimum rotations
+            if (lcpLen > maxLcpLen) {
+                maxLcpLen = lcpLen;
+                // Minimum of left and right rotations to achieve this position
+                minRotations = Math.min(rotations, n - rotations);
+            } else if (lcpLen == maxLcpLen) {
+                // If LCP length is the same, take the minimum rotations
+                int currentMinRotations = Math.min(rotations, n - rotations);
+                minRotations = Math.min(minRotations, currentMinRotations);
+            }
+
+            // Perform one right rotation
+            current = rightRotate(current);
+        }
+
+        // If no common prefix exists, return -1
+        if (maxLcpLen == 0) {
+            return -1;
+        }
+
+        return minRotations;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        // Read input
+        String firstString = sc.nextLine();
+        String secondString = sc.nextLine();
+
+        // Compute result
+        int result = solve(firstString, secondString);
+
+        // Print output
+        System.out.println(result);
+
+        sc.close();
+    }
+}
