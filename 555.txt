@@ -1,0 +1,48 @@
+import java.util.*;
+
+public class MartinFootsteps2 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int X1 = sc.nextInt();
+        int X2 = sc.nextInt();
+        int V1 = sc.nextInt();
+        int N = sc.nextInt();
+
+        Map<Integer, Integer> count = new HashMap<>();
+
+        for (int i = 1; i <= N; i++) {
+            int diff = X1 + i * V1 - X2;
+            if (diff <= 0) continue;
+
+            // Find all V2 that are divisors of diff and diff/V2 <= i
+            for (int V2 = 1; V2 <= diff; V2++) {
+                if (diff % V2 == 0) {
+                    int t = diff / V2;
+                    if (t <= i) {
+                        count.put(V2, count.getOrDefault(V2, 0) + 1);
+                    }
+                }
+            }
+        }
+
+        int maxCount = 0;
+        int bestV2 = 0;
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            if (entry.getValue() > maxCount ||
+                    (entry.getValue() == maxCount && entry.getKey() > bestV2)) {
+                maxCount = entry.getValue();
+                bestV2 = entry.getKey();
+            }
+        }
+
+        int rs1=0,rs2=0;
+        if (V1<N) {
+            rs1 = bestV2;
+            rs2 = (maxCount == 0 ? 0 : maxCount);
+        }else{
+            rs1 = (maxCount == 0 ? 0 : maxCount);
+            rs2 = bestV2;
+        }
+        System.out.println(rs1 + " " + rs2);
+    }
+}
