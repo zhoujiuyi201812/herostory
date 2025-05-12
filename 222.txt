@@ -1,0 +1,8 @@
+The first line of the input consists of two space-separated integers - Xy and X≥representing the initial positions of Martin's father and Martin, respectively.
+The second line consists of two space-separated integers -
+V- and Nrepresenting the velocity of the father and the number of Steps taken by the father. respecavely.
+Output
+Print two space separated integers as maximum number of commons
+tootsteps = and respecive
+speed ½z
+Constraints
