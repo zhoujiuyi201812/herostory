@@ -1,0 +1,53 @@
+import java.util.Scanner;
+
+public class Main {
+    // Helper function to compute the length of the longest common prefix
+    public static int longestCommonPrefix(String s1, String s2) {
+        int len = 0;
+        for (int i = 0; i < s1.length(); i++) {
+            if (s1.charAt(i) != s2.charAt(i)) {
+                break;
+            }
+            len++;
+        }
+        return len;
+    }
+
+    // Main function to find minimum rotations for maximum LCP
+    public static int solve(String firstString, String secondString) {
+        int n = firstString.length();
+        // Validate input: strings must be of equal length and non-empty
+        if (n != secondString.length() || n == 0) {
+            return -1;
+        }
+
+        String current = secondString; // Start with the original second string
+        int maxLcp = 0; // Maximum LCP found
+        int minRot = -1; // Minimum rotations to achieve maxLcp
+
+        // Iterate through all possible rotations (k = 0 to n-1)
+        for (int k = 0; k < n; k++) {
+            int lcp = longestCommonPrefix(firstString, current);
+            if (lcp > maxLcp) {
+                maxLcp = lcp;
+                minRot = Math.min(k, n - k); // Minimum of k right or (n-k) left rotations
+            } else if (lcp == maxLcp && lcp > 0) {
+                minRot = Math.min(minRot, Math.min(k, n - k));
+            }
+            // Perform one right rotation
+            current = current.charAt(n - 1) + current.substring(0, n - 1);
+        }
+
+        // If no common prefix found, return -1; otherwise, return minRot
+        return maxLcp == 0 ? -1 : minRot;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String firstString = sc.nextLine();
+        String secondString = sc.nextLine();
+        int result = solve(firstString, secondString);
+        System.out.println(result);
+        sc.close();
+    }
+}
