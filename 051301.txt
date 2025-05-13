@@ -1,0 +1,51 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int X1 = sc.nextInt();
+        int X2 = sc.nextInt();
+        int V1 = sc.nextInt();
+        int N = sc.nextInt();
+
+        if (V1 == 0) {
+            int V2 = X1 - X2;
+            System.out.println("1 " + V2);
+        } else {
+            int maxE = 0;
+            int maxV2 = Integer.MIN_VALUE;
+            for (int k = 0; k <= N; k++) {
+                int V2 = X1 + k * V1 - X2;
+                int E;
+                if (V2 == 0) {
+                    E = 1;
+                } else {
+                    int g = gcd(Math.abs(V1), Math.abs(V2));
+                    int c = V2 / g;
+                    if (c > 0) {
+                        E = (N - k) / c + 1;
+                    } else {
+                        E = k / (-c) + 1;
+                    }
+                }
+                if (E > maxE) {
+                    maxE = E;
+                    maxV2 = V2;
+                } else if (E == maxE && V2 > maxV2) {
+                    maxV2 = V2;
+                }
+            }
+            System.out.println(maxE + " " + maxV2);
+        }
+        sc.close();
+    }
+
+    private static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
