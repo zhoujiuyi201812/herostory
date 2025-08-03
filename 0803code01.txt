@@ -1,53 +1,56 @@
 import java.util.Scanner;
 
 public class StreetLights {
- public static void main(String[] args) {
- // Set up input scanner
- Scanner scanner = new Scanner(System.in);
- 
- // Read number of street lights (N)
- int N = scanner.nextInt();
- 
- // Read initial state into an array
- int[] currentState = new int[N];
- for (int i = 0; i < N; i++) {
- currentState[i] = scanner.nextInt();
- }
- 
- // Read number of days (M)
- int M = scanner.nextInt();
- 
- // Simulate M days
- for (int day = 0; day < M; day++) {
- // Create array for the next state
- int[] nextState = new int[N];
- 
- // End lights are always OFF
- nextState[0] = 0;
- nextState[N - 1] = 0;
- 
- // Compute state for middle lights
- for (int i = 1; i < N - 1; i++) {
- // If adjacent lights are the same, light turns OFF (0)
- // If different, light turns ON (1)
- nextState[i] = (currentState[i - 1] == currentState[i + 1]) ? 0 : 1;
- }
- 
- // Update current state to next state
- currentState = nextState;
- }
- 
- // Print final state
- for (int i = 0; i < N; i++) {
- System.out.print(currentState[i]);
- if (i < N - 1) {
- System.out.print(" ");
- }
- }
- System.out.println();
- 
- // Close scanner
- scanner.close();
- }
+    public static void main(String[] args) {
+        // Initialize scanner for input
+        Scanner scanner = new Scanner(System.in);
+        
+        // Read number of lights (N=8)
+        int N = scanner.nextInt();
+        
+        // Read initial state into current array
+        int[] current = new int[N];
+        for (int i = 0; i < N; i++) {
+            current[i] = scanner.nextInt();
+        }
+        
+        // Read number of days (M)
+        int M = scanner.nextInt();
+        
+        // Simulate M days
+        for (int day = 0; day < M; day++) {
+            // Create next state array
+            int[] next = new int[N];
+            
+            // End lights are always off
+            next[0] = 0;
+            next[N - 1] = 0;
+            
+            // Compute state for middle lights (1 to N-2)
+            for (int i = 1; i < N - 1; i++) {
+                if (current[i - 1] == current[i + 1]) {
+                    // Both adjacent lights are the same (0,0 or 1,1)
+                    next[i] = 0;
+                } else {
+                    // Adjacent lights differ (0,1 or 1,0)
+                    next[i] = 1;
+                }
+            }
+            
+            // Update current state to next state
+            current = next;
+        }
+        
+        // Print final state
+        for (int i = 0; i < N; i++) {
+            System.out.print(current[i]);
+            if (i < N - 1) {
+                System.out.print(" ");
+            }
+        }
+        System.out.println();
+        
+        // Close scanner
+        scanner.close();
+    }
 }
-------------
