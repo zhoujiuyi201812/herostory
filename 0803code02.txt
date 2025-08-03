@@ -1,0 +1,72 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MaximumSignal {
+    static class Run {
+        int start;
+        int end;
+        char value;
+        
+        Run(int s, int e, char v) {
+            start = s;
+            end = e;
+            value = v;
+        }
+    }
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Read input size (not used directly as we can get it from the input array)
+        int strInputSize = scanner.nextInt();
+        scanner.nextLine(); // Consume the remaining newline
+        
+        // Read the binary string as an array of characters
+        String[] inputParts = scanner.nextLine().split(" ");
+        char[] binary = new char[inputParts.length];
+        for (int i = 0; i < inputParts.length; i++) {
+            binary[i] = inputParts[i].charAt(0);
+        }
+        
+        int n = binary.length;
+        
+        // If the string is too short, there can't be a middle signal
+        if (n <= 3) {
+            System.out.println(0);
+            return;
+        }
+        
+        // Identify all consecutive runs of 0s or 1s
+        List<Run> runs = new ArrayList<>();
+        int start = 0;
+        char current = binary[0];
+        
+        for (int i = 1; i < n; i++) {
+            if (binary[i] != current) {
+                runs.add(new Run(start, i - 1, current));
+                start = i;
+                current = binary[i];
+            }
+        }
+        // Add the last run
+        runs.add(new Run(start, n - 1, current));
+        
+        int maxLength = 0;
+        
+        // Check each run to see if it's a valid middle signal
+        for (Run run : runs) {
+            // A valid signal must not be at the start or end of the string
+            if (run.start > 0 && run.end < n - 1) {
+                int length = run.end - run.start + 1;
+                if (length > maxLength) {
+                    maxLength = length;
+                }
+            }
+        }
+        
+        System.out.println(maxLength);
+        scanner.close();
+    }
+}
+    
