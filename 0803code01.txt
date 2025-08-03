@@ -1,56 +1,60 @@
 import java.util.Scanner;
+import java.util.Scanner;
 
 public class StreetLights {
     public static void main(String[] args) {
-        // Initialize scanner for input
         Scanner scanner = new Scanner(System.in);
         
-        // Read number of lights (N=8)
-        int N = scanner.nextInt();
+        // Read input
+        int n = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
         
-        // Read initial state into current array
-        int[] current = new int[N];
-        for (int i = 0; i < N; i++) {
-            current[i] = scanner.nextInt();
+        int[] current = new int[8];
+        String[] stateParts = scanner.nextLine().split(" ");
+        for (int i = 0; i < 8; i++) {
+            current[i] = Integer.parseInt(stateParts[i]);
         }
         
-        // Read number of days (M)
-        int M = scanner.nextInt();
+        int days = scanner.nextInt();
         
-        // Simulate M days
-        for (int day = 0; day < M; day++) {
-            // Create next state array
-            int[] next = new int[N];
+        // Simulate each day
+        for (int d = 0; d < days; d++) {
+            int[] nextState = new int[8];
             
-            // End lights are always off
-            next[0] = 0;
-            next[N - 1] = 0;
-            
-            // Compute state for middle lights (1 to N-2)
-            for (int i = 1; i < N - 1; i++) {
-                if (current[i - 1] == current[i + 1]) {
-                    // Both adjacent lights are the same (0,0 or 1,1)
-                    next[i] = 0;
+            for (int i = 0; i < 8; i++) {
+                int left, right;
+                
+                if (i == 0) {
+                    // First position - left is assumed 0
+                    left = 0;
+                    right = current[1];
+                } else if (i == 7) {
+                    // Last position - right is assumed 0
+                    left = current[6];
+                    right = 0;
                 } else {
-                    // Adjacent lights differ (0,1 or 1,0)
-                    next[i] = 1;
+                    // Middle positions
+                    left = current[i - 1];
+                    right = current[i + 1];
                 }
+                
+                // Determine next state
+                nextState[i] = (left == right) ? 0 : 1;
             }
             
-            // Update current state to next state
-            current = next;
+            current = nextState;
         }
         
-        // Print final state
-        for (int i = 0; i < N; i++) {
+        // Print the result
+        for (int i = 0; i < 8; i++) {
             System.out.print(current[i]);
-            if (i < N - 1) {
+            if (i < 7) {
                 System.out.print(" ");
             }
         }
         System.out.println();
         
-        // Close scanner
         scanner.close();
     }
 }
+
